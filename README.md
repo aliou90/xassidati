@@ -108,6 +108,9 @@ Xassidati/
 ```bash
 git clone git@github.com:aliou90/xassidati.git
 cd xassidati
+
+# Renommer dossier des livres
+sudo mv assets/documents/books_sample assets/documents/books
 ```
 
 ### 2️⃣ Configurer la base de données
