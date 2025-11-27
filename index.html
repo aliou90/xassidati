@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chargement...</title> <!-- Valeur temporaire -->
+    <script>
+        // Chargement du nom de l'application via AJAX
+        fetch('rqt_app_infos_get.php') // Le nom de ton fichier PHP avec le JSON
+        .then(response => response.json())
+        .then(data => {
+            if (data.name) {
+            document.title = data.name; // Met à jour le <title>
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des infos app:', error);
+        });
+    </script>
+    
+    <!-- RÉFÉRECEMENT NATUREL (SEO) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Découvrez et téléchargez les livres de Cheikh Ahmadou Bamba, accessibles même hors connexion.">
+    <meta name="keywords" content="Xassida, xassidati, Ahmadou Bamba, Khassaides, Mouridisme, Bibliothèque Islamique, Touba">
+    <meta name="author" content="Aliou Mbengue">
+    <meta property="og:title" content="xassidati - Bibliothèque Mouride">
+    <meta property="og:description" content="Application PWA pour lire les Khassaïdes et le Coran hors ligne.">
+    <meta property="og:image" content="/assets/images/brands/banner.png">
+    <meta property="og:url" content="https://xassidati.com"> <!-- L'URL de l'application -->
+    <meta name="theme-color" content="#000000">
+
+    <link rel="canonical" href="https://xassidati.com/index.html"> <!-- Lien canonique pour éviter le contenu dupliqué -->
+    <link rel="preload" href="/assets/fonts/AmiriQuran.ttf" as="font" type="font/ttf" crossorigin="anonymous"> <!-- Préchargement de la police Amiri Quran -->
+
+    <script>
+        // Charger le JSON-LD pour les livres - Résultats enrichis
+        fetch('/assets/data/books.jsonld')
+        .then(response => response.json())
+        .then(data => {
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.textContent = JSON.stringify(data);
+            document.head.appendChild(script);
+        })
+        .catch(error => console.error("Erreur JSON-LD:", error));
+    </script>
+
+    <!-- Inclure JQuery et JQuery UI -->
+    <script src="./assets/js/jquery.min.js"></script>
+
+    <!-- Inclure Bootstrap -->    
+    <script src="./assets/js/popper.min.js"></script>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <script src="./assets/js/bootstrap.min.js"></script>
+
+    <!-- Shepherd.js - Visite guidée -->
+    <link rel="stylesheet" href="./assets/css/shepherd.min.css">
+    <script src="./assets/js/shepherd.min.js"></script>
+
+    <!-- Inclure Hammer.js -->
+    <script src="./assets/js/hammer.min.js"></script>
+
+    <!-- Feuille de style CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Lien vers le manifeste -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+
+
+<script>
+    // Chargement rapide du livre après référencement ou recherche 
+    window.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const group = params.get('group');
+        const book = params.get('book');
+        const lang = params.get('lang');
+        const pageParam = params.get('page');
+        
+        // Vérifier si 'page' est un entier positif
+        const page = pageParam && !isNaN(parseInt(pageParam, 10)) ? parseInt(pageParam, 10) : null;
+        console.log(`Chargement du livre: ${group}, ${book}, ${lang}, page: ${page}`);
+
+        if (group && book && lang) {
+            loadImages(group, book, lang, page);
+
+            // Sauvegarder les infos du livre affiché et actualiser
+            saveStateIfValid(group, book, lang, 1);
+            //window.location.href = '/';
+        }
+
+    });
+</script>
+
+</head>
+<body class="app-container">
+    <main id="" class=""> <!-- DEBUT MAIN -->
+        <header>
+            <!-- Le header et l'entête du menu gauche-->
+            <div id="header-content-wrapper">  <!-- DEBUT PAGE HEADER FIXÉ EN HAUT -->
+                <!-- Bouton cliquable pour l'entête du menu -->
+                <div class="sidebar-header-left menu-header text-center toggle-sidebar" onclick="toggleSidebar()">            
+                    <div class="btn btn-link text-decoration-none fs-5 mt-3 text-white w-100 h-100">
+                        بسم اللّه
+                        <span id="toggle-icon">
+                            <svg id="toggle-icon-svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-layout-sidebar-inset" viewBox="0 0 16 16">
+                            <path d="M14 2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2z"/>
+                            <path d="M3 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="sidebar-header-right menu-header text-center toggle-sidebar" onclick="toggleSidebar()">
+                    <div class="btn btn-link text-decoration-none fs-5 mt-3 text-white w-100 h-100">
+                        الحمد للّه
+                    </div>
+                </div>
+                <div class="container-fluid d-flex align-items-stretch py-0 w-100 m-0 p-0"> <!-- w-100 pour étirer toute la largeur -->
+                    <!-- Bouton pour masquer/afficher le menu avec l'image -->
+                    <div class="menuBrand menu-header text-center toggle-sidebar flex-grow-1" onclick="toggleSidebar()"> <!-- flex-grow-1 pour occuper toute la largeur -->
+                        <div id="menuBrand" class="btn btn-link text-decoration-none fs-5 w-100 h-100 d-flex align-items-center justify-content-center p-0" style="height: 100px;"> <!-- Hauteur spécifiée ici -->
+                            <img src="assets/images/brands/banner.png" alt="Logo" class="brand-logo w-100 h-100" style="object-fit: cover; border-radius: 12px;"> <!-- Image étirée sur tout le conteneur -->
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- FIN PAGE HEADER FIXÉ EN HAUT -->
+        </header>
+
+        <!-- Page par défaut (cachée lors du réinitialisation mot de passe) --->
+        <div id="pageDefault"> <!-- DEBUT PAGE PAR DÉFAUT-->
+            <nav> <!-- DEBUT SIDEBAR -->
+                <div id="sidebar" class="row"> <!-- DEBUT PAGE SIDEBAR WRAPPER -->
+                <!-- Barre latérale (sidebar) -->
+                    <div id="sidebar-wrapper" class="sidebar-container border-end">
+                        <!--  PARTIE SIGNAUX ET CHAMPS DE RECHERCHE   -->
+                        <div class="sidebarUpGroup">
+                            <!-- Signal de connexion -->
+                            <div>
+                                <span id="connexionSignal" class="badge badge-pill badge-light m-0 p-0 d-flex align-items-center justify-content-between">
+                                    <!-- Bloc login à droite -->
+                                    <span id="connexionSignalRight" class="me-1">                                
+                                        <span id="loginSignalIcon">
+                                            <img src="#" alt="" class="rounded-circle" width="16">
+                                        </span>
+                                        <span id="loginSignalText"></span>
+                                    </span>
+                                    <!-- Bloc de connexion à gauche -->
+                                    <span id="connexionSignalLeft" class="d-flex align-items-center ms-1">
+                                        <span id="connexionSignalText"></span>
+                                        <span id="connexionSignalIcon" class="me-1">
+                                            <img src="#" alt="" class="rounded-circle" width="16">
+                                        </span>                                
+                                    </span>
+                                </span>
+                            </div>                        
+                            <div class="separator"></div>
+                            <!-- Champ de recherche -->
+                            <input type="text" class="form-control h-50" 
+                                name="cherchBook" id="cherchBook" dir="rtl" 
+                                placeholder="بحث الكتاب ... Rechercher" 
+                                oninput="cherchBooks(this)"
+                                >
+                            <div class="separator"></div>
+                        </div>
+                        <!-- PARTIE LISTE DES LIVRES ET RECHERCHE -->
+                        <div id="sidebarDownGroup">
+                            <!-- ZONE DES LIVRES -->
+                            <div id="diplay-book-list-area">
+                                <!-- Zone pour afficher les livres trouvés - Recherche -->
+                                <div id="found-books" class="list-group list-group-flush groupListForAll bg-light" style="display: none;"></div>
+
+                                <!-- Zone pour afficher tous les livres - Affiché l'utilisateur est connecté -->
+                                <div id="all-books" class="list-group list-group-flush" style="display: block;">
+                                    <!-- Onglets Bootstrap -->
+                                    <ul class="sidebarDownHeader nav nav-tabs mb-2 mt-2 px-0 py-1 d-flex flex-row align-items-center justify-content-between gap-1" id="bookTabs" role="tablist" style="margin-left: 0; margin-right: 0;">                                        
+                                        <li class="nav-item flex-grow-0 p-0 m-0" role="presentation">
+                                            <button class="nav-link active px-2 py-1" id="allbooks-tab" data-bs-toggle="tab" data-bs-target="#allBooksGroups" type="button" role="tab">
+                                            🌍 Tout
+                                            </button>
+                                        </li>
+                                        <li class="nav-item flex-grow-1 p-0 m-0" role="presentation">
+                                            <button class="nav-link w-100 text-truncate px-1 py-1" id="downloaded-tab" data-bs-toggle="tab" data-bs-target="#downloadedBooksGroup" type="button" role="tab">
+                                            📚 Mes livres
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div id="allBooksTabContent" class="tab-content"> <!-- DEBUT TAB DES LIVRES-->
+                                        <div id="downloadedBooksGroup" role="tabpanel" aria-labelledby="downloaded-tab" class="tab-pane fade"> 
+                                            <!-- Affichages des toutes collections faite par refreshDownloadedBooks() en JS -->
+                                        </div>
+                                        
+                                        <div id="allBooksGroups" class="tab-pane fade show active" role="tabpanel" aria-labelledby="allbooks-tab">
+                                            <!-- Affichages des collections de l'utilisateur fait par renderBooks() en JS -->
+                                        </div>
+                                    </div> <!-- FIN TAB DES LIVRES-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  <!-- FIN PAGE SIDEBAR WRAPPER -->
+            </nav> <!-- FIN SIDEBAR -->
+
+            <section id="content-section">  <!-- DEBUT SECTION CONTENU PRINCIPAL -->
+                <article id="content"> <!-- DEBUT ZONE D'AFFICHAGE -->
+                    <!-- Contenu des images -->
+                    <div id="images-container" class="col-md-12 carousel slide" data-bs-ride="false" data-bs-interval="false" data-bs-wrap="false" data-bs-pause="true">
+                        <div class="carousel-inner" id="carousel-inner">
+                            <!-- Image par défaut affichée au démarrage -->
+                            <div class="carousel-item active">
+                                <img src="assets/images/covers/pre.png" alt="Livre en images">
+                            </div>
+                        </div>
+                        <!-- Bouton navigation du slide gérés par le script js-->
+                        <!-- Pour l'activer ici ajoutez les classes: data-bs-slide="prev" et data-bs-slide="next"-->
+                        <!-- Bouton navigation du slide gérés par le script js-->
+                        <button id="prevBtn" class="carousel-control-prev" type="button" data-bs-target="#images-container">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button id="nextBtn" class="carousel-control-next" type="button" data-bs-target="#images-container">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                    <!-- Conteneur pour affichage des métadonnées du livre -->
+                    <div class="">
+                        <div class="position-relative">
+                            <div id="metaBookSection" style="display: none;">
+                                <!-- Lien cliquable vers le livre/collection -->
+                                <div id="metaBookLink" class="book-meta text-black small">
+                                    <p id="meta-book-group" style="display: none;"></p>
+                                    <p id="meta-book-name" class="bookName mb-1 fw-bold"></p>
+                                    <p id="meta-book-arabic-name" class="bookName mb-1 fw-bolder"></p>
+                                    <!-- <p id="meta-book-author" class="mb-1"></p> -->
+                                </div>
+
+                                <!-- Bouton Fermer -->
+                                <div class="close-button" onclick="showMainPage()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="red" class="bi bi-x-octagon-fill" viewBox="0 0 16 16">
+                                        <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353zm-6.106 4.5L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article> <!-- FIN ZONE D'AFFICHAGE -->
+    
+            <article class="installAppInfoSection"> <!-- DEBUT SECTION INSTALL APP -->
+                <!-- Visite guidée  -->
+                <div id="showDemoBtn" class="d-flex align-content-center text-center justify-content-center mb-4" >
+                    <p class="text-white" style="cursor: pointer;">Afficher la visite guidée -                   
+                        <svg id="c" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square mb-1" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                    </p> 
+                </div>
+                <!-- MESSAGE INCITER À INSTALLER L'APP SUR LES APAREIL-->
+                <div id="installAppMsg" class="app-installer" style="display: none;">
+                    <p class="text-info text-center fst-italic">
+                        Pour plus de fonctionnalités,
+                        <button id="installAppButton" style="border: none; cursor: pointer; padding: 0px 2px;">
+                            Installer l'application.
+                            <img src="assets/images/icons/pwa-install-icon-modified.png" alt="Installer" width="16" height="16" class="mb-1">
+                        </button>
+                    </p>
+                </div>
+            </article>  <!-- FIN SECTION INSTALL APP -->
+
+            <article>  <!-- DEBUT SECTION FORMULAIRE -->
+                <!-- FORMULAIRE DE CONNEXION/INSCRIPTION -->
+                <div id="auth-section" style="display: none; color: white; background-color: #130a4d; padding: 20px; max-width: 400px; margin: 20px auto;">
+                    <ul class="nav nav-tabs" id="auth-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="login-nav" data-bs-toggle="tab" href="#login-tab">Se connecter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="register-nav" data-bs-toggle="tab" href="#register-tab">S'inscrire</a>
+                        </li>                
+                    </ul>
+
+                    <div class="tab-content" style="background-color: #222; padding: 20px; border-radius: 5px;">
+                        <!-- Formulaire de connexion -->
+                        <div id="login-tab" class="tab-pane fade show active">
+                            <form id="loginForm">
+                                <input type="text" class="allFormInput" name="login" id="login" placeholder="Email ou Téléphone" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+
+                                <!-- Champ mot de passe avec toggle visibilité -->
+                                <div style="position: relative;">
+                                    <input type="password" class="allFormInput" name="password" id="login_password" placeholder="Mot de passe" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                                    <span class="toggle-password" data-target="login_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                                </div>
+
+                                <button type="submit" style="width: 100%; padding: 10px; background-color: #5A5AFF; color: white; border: none; cursor: pointer;">Se connecter</button>
+                                <a href="#" id="openForgotPasswordtab" style="display: block; margin-top: 10px; color: #5A5AFF;">Mot de passe oublié ?</a>
+                            </form>
+                        </div>
+
+                        <!-- Formulaire d'inscription -->
+                        <div id="register-tab" class="tab-pane fade">
+                            <form id="registerForm">
+                                <input type="text" class="allFormInput" name="fullname" placeholder="Nom Complet" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                                <input type="email" class="allFormInput" name="email" placeholder="Email" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                                <input type="text" class="allFormInput" name="phone" placeholder="Téléphone" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+
+                                <!-- Mot de passe avec visibilité -->
+                                <div style="position: relative;">
+                                    <input type="password" class="allFormInput" name="password" id="password" placeholder="Mot de passe" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                                    <span class="toggle-password" data-target="password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                                </div>
+
+                                <!-- Confirmation du mot de passe avec visibilité -->
+                                <div style="position: relative;">
+                                    <input type="password" class="allFormInput" name="confirm_password" id="confirm_password" placeholder="Confirmer le mot de passe" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                                    <span class="toggle-password" data-target="confirm_password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                                </div>
+
+                                <button type="submit" style="width: 100%; padding: 10px; background-color: #5A5AFF; color: white; border: none; cursor: pointer;">S'inscrire</button>
+                            </form>
+                        </div>
+
+                        <!-- Formulaire mot de passe oublié -->
+                        <div id="forgot-password-tab" class="tab-pane fade">
+                            <form id="forgotPasswordForm">
+                                <p style="color: white; margin-bottom: 10px;">Entrez votre adresse email pour réinitialiser votre mot de passe.</p>
+                                <input type="email" class="allFormInput" name="email" id="recover-email" placeholder="Email" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+
+                                <button type="submit" style="width: 100%; padding: 10px; background-color: #5A5AFF; color: white; border: none; cursor: pointer;">Envoyer</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <span id="connectingMsg" class="fst-italic" style="display: block; margin-top: 10px; word-wrap: break-word;">
+                        La connexion à votre compte vous permet de concerver vos données (livres téléchargés etc...) sur tous vos appareils.
+                    </span>
+                </div>
+
+                <!-- Affichage de l'utilisateur connecté -->
+                <div id="user-info" style="display: none; text-align: center; color: white; margin-bottom: 18px;">
+                    <img src="assets/images/icons/fall-icon-192x192.png" alt="User Icon" class="rounded-circle" width="50">
+                    <span id="user-name">
+                        <script>
+                            // Si hors ligne, vérifier la session depuis le cache local
+                            const cachedSession = localStorage.getItem('userSession');
+                            if (cachedSession) {
+                                console.log('Utilisateur connecté.');
+                                let conxInfos = JSON.parse(cachedSession);
+                                document.getElementById('user-name').textContent = conxInfos?.user?.fullname || '';
+                            }
+                        </script>
+                    </span>
+                    <p class="text-success fst-italic">Vous êtes connecté !</p>
+                    <span class="">
+                        <a href="#" id="logout" class="btn-sm btn-outline-warning text-decoration-none rounded-pill">Se déconnecter</a>
+                        <a href="#" id="modifyAccount" class="btn-sm btn-outline-light text-decoration-none rounded-pill">Modifier compte</a>                
+                    </span>
+                </div>
+
+                <!-- Modal Modifier compte -->
+                <div id="modifyAccountModal" class="modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+                    <div class="modal-content" style="color: white; background-color: #130a4d; padding: 20px; max-width: 400px; width: 100%; margin: 20px auto;">
+                        <h4>Modifier mon compte</h4>
+                        <form id="modifyAccountForm">
+                            <div style="position: relative;">
+                                <input type="text" id="updateFullname" placeholder="Nom complet" required class="form-control mb-2">
+                            </div>
+                            <div style="position: relative;">
+                                <input type="email" id="updateEmail" placeholder="Email" required class="form-control mb-2">
+                            </div>
+                            <div style="position: relative;">
+                                <input type="tel" id="updatePhone" placeholder="Numéro téléphone" required class="form-control mb-2">
+                            </div>
+                            
+                            <div style="position: relative;">
+                                <input type="password" id="updatePassword" placeholder="Mot de passe" class="form-control mb-2 allFormInput">
+                                <span class="toggle-password" data-target="updatePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                            </div>
+                            
+                            <p style="font-size: 0.8em; font-style: italic;">Pour modifier le mot de passe, veuillez remplir les champs ci-dessous. Sinon, laissez-les vides.</p>
+
+                            <div style="position: relative;">
+                                <input type="password" id="updateNewPassword" placeholder="Nouveau mot de passe" class="form-control mb-2 allFormInput">
+                                <span class="toggle-password" data-target="updateNewPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                            </div> 
+
+                            <div style="position: relative;">
+                                <input type="password" id="updateConfirmPassword" placeholder="Confirmer le mot de passe" class="form-control mb-2 allFormInput">
+                                <span class="toggle-password" data-target="updateConfirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+                            </div>
+
+                            <div class=" d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">Sauvegarder les modifications</button>
+                                <button type="button" id="closeModal" class="btn btn-secondary">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Affichage Message hors connexion internet - Si l'application PWA est installée -->
+                <div id="connexion-info" style="display: none; text-align: center; color: white;">
+                    <img src="assets/images/icons/fall-icon-192x192.png" alt="Connexion Icon" class="rounded-circle" width="50">
+                    <span id="user-name-offline"></span>
+                    <p class="text-warning fst-italic">Vous êtes hors ligne.</p>
+                </div>
+            </article> <!-- FIN SECTION FORMULAIRE -->
+        
+            <!-- BLOC DES ÉLÉMENTS DYNAMIQUES - CACHÉS PAR DÉFAUT -->
+            <article>                 
+                <!-- Barre de navigation sur pages (tous ses éléments cachés par défaut sauf le bouton showMarkedPageBtn)  -->
+                <div id="pageNavigationForm" style="display: none;" class="page-navigation d-flex justify-content-center align-items-center mt-3">
+                    <!-- Bouton Basculement Paysage/Portrait (masqué sur petit écran) -->
+                    <button id="toggle-orientation" style="display: none;" class="orientation-toggle" title="Bascule Portrait/Paysage">
+                        <span class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-aspect-ratio" viewBox="0 0 16 16">
+                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h13A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 12.5zM1.5 3a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z"/>
+                            <path d="M2 4.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1H3v2.5a.5.5 0 0 1-1 0zm12 7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1 0-1H13V8.5a.5.5 0 0 1 1 0z"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <!-- Aller vers la première page (fr) ou dernière (ar) -->
+                    <div id="firstPageBtnGrp" class="pageNavBtnGroup">
+                        <svg id="firstPageBtn" xmlns="http://www.w3.org/2000/svg" fill="chocolate" class="bi bi-chevron-bar-left mr-2" viewBox="0 0 16 16" style="cursor: pointer; background-color: transparent; border: none;">
+                            <path fill-rule="evenodd" d="M11.854 3.646a.5.5 0 0 1 0 .708L8.207 8l3.647 3.646a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0M4.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 1 0v-13a.5.5 0 0 0-.5-.5"/>
+                        </svg>
+                        <small id="lastPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Der</small>
+                    </div>
+                    
+                    <!-- Aller vers la page suivante (ar) ou précédente (fr)  -->
+                    <div id="prevPageBtnGrp" class="pageNavBtnGroup">
+                        <svg id="prevPageBtn" xmlns="http://www.w3.org/2000/svg" fill="blue" class="bi bi-caret-left ms-2" viewBox="0 0 16 16" style="cursor: pointer; background-color: transparent; border: none;">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                        <small id="prevPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Suiv</small>
+                    </div>
+
+                    <!-- Bouton Marquer page -->
+                    <div id="markPageBtnGrp" class="pageNavBtnGroup">
+                        <svg id="markPageBtn" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-bookmarks ms-2" viewBox="0 0 16 16" style="cursor: pointer;">
+                            <path d="M2 4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v11.5a.5.5 0 0 1-.777.416L7 13.101l-4.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v10.566l3.723-2.482a.5.5 0 0 1 .554 0L11 14.566V4a1 1 0 0 0-1-1z"/>
+                            <path d="M4.268 1H12a1 1 0 0 1 1 1v11.768l.223.148A.5.5 0 0 0 14 13.5V2a2 2 0 0 0-2-2H6a2 2 0 0 0-1.732 1"/>
+                        </svg>
+                        <small id="markPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Mark</small>
+                    </div>
+
+                    <!-- Formulaire de recherche de page -->
+                    <div id="pageInputGroup" class="col-auto ms-2">
+                        <div class=" d-inline-block">
+                            <div class="input-group">
+                                <input type="number" id="pageInput" class="form-control w-auto text-center" min="1" value="1" maxlength="4" dir="ltr" placeholder="Page">
+                                <div class="input-group-prepend d-flex">
+                                    <span id="totalPageTextInfo" class="input-group-text"></span> <!-- Page total du livre affiché -->
+                                    <button id="goToPageBtn" width="8" height="8" class="btn btn-outline-primary">Ok</button>
+                                </div>
+                            </div>
+                            <small id="pageInputGrpLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Rechercher une page</small>    
+                        </div>
+                    </div>        
+
+                    <!-- Bouton aller vers la page marquée -->
+                    <div id="showMarkedPageBtnGrp" class="pageNavBtnGroup">
+                        <svg id="showMarkedPageBtn" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-arrow-counterclockwise ms-2" viewBox="0 0 16 16" style="cursor: pointer;">
+                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2z"/>
+                            <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466"/>
+                        </svg>
+                        <small id="showMarkedPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Retour</small>
+                    </div>
+
+                    <!-- Aller vers la page précédente (ar) ou suivante (fr) -->
+                    <div id="nextPageBtnGrp" class="pageNavBtnGroup">
+                    <svg id="nextPageBtn" xmlns="http://www.w3.org/2000/svg" fill="blue" class="bi bi-caret-right ms-2" viewBox="0 0 16 16" style="cursor: pointer; background-color: transparent; border: none;">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                    </svg>
+                    <small id="nextPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Préc</small>
+                    </div>
+
+                    <!-- Afficher dernièere page (fr) ou première page (ar) -->
+                    <div id="lastPageBtnGrp" class=" pageNavBtnGroup">
+                    <svg id="lastPageBtn" xmlns="http://www.w3.org/2000/svg" fill="chocolate" class="bi bi-chevron-bar-right ml-2" viewBox="0 0 16 16" style="cursor: pointer; background-color: transparent; border: none;">
+                        <path fill-rule="evenodd" d="M4.146 3.646a.5.5 0 0 0 0 .708L7.793 8l-3.647 3.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0M11.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                    <small id="firstPageLbl" class="navigator-labels text-center" style="font-size: 0.6rem; display: block; line-height: 1;">Pre</small>
+                    </div>
+                </div>
+
+                <!-- Popovers pour confirmation (placé en dehors du conteneur) -->
+                <div id="popoverContent" class="popover" role="tooltip" style="display: none;">
+                    <div class="popover-header">Confirmation</div>
+                    <div class="popover-body">
+                        Afficher la page marquée ?
+                        <br>
+                        <span class=" d-flex align-items-center justify-content-between">
+                            <button id="confirmYes" class="btn btn-sm btn-success">Oui</button>
+                            <button id="confirmNo" class="btn btn-sm btn-danger">Non</button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Popover 2 -->
+                <div id="popoverContent2" class="popover" role="tooltip" style="display: none;">
+                    <div class="popover-header">Confirmation</div>
+                    <div class="popover-body">
+                        Marquer cette page ?
+                        <br>
+                        <span class=" d-flex align-items-center justify-content-between">
+                            <button id="confirmYes2" class="btn btn-sm btn-success">Oui</button>
+                            <button id="confirmNo2" class="btn btn-sm btn-danger">Non</button>
+                        </span>
+                    </div>
+                </div>
+            </article>
+        </div> <!-- FIN PAGE PAR DÉFAUT-->
+
+        <!-- Message flottant dédié à  l'affichage des messages d'erreur ou de succès -->
+        <div id="floating-message" style="display: none;"></div>
+
+        <!-- Modal téléchargement de livre -->
+        <div id="collectionModal" class="modal" style="display:none; position:fixed; top:0; left:0; 
+            width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+            <div class="modal-content" style="background:#fff; padding:20px; max-width:400px; width:90%; display:flex; flex-direction:column; gap:10px;">
+                
+                <!-- ✅ Zone de texte explicative -->
+                <div id="collectionModalMessage"
+                style="
+                    font-size: 1rem;
+                    font-weight: 600;
+                    text-align: center;
+                    color: #2c3e50;
+                    padding: 10px 15px;
+                    border-left: 4px solid #007bff;
+                    background: #f1f9ff;
+                    border-radius: 6px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+                ">
+                📚 Dans quelle collection souhaitez-vous enregistrer ce livre ?
+                </div>
+
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button id="newCollectionBtn" class="btn btn-sm btn-outline-primary" style="border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-plus-circle-dotted" viewBox="0 0 16 16">
+                        <path d="M8 0q-.264 0-.523.017l.064.998a7 7 0 0 1 .918 0l.064-.998A8 8 0 0 0 8 0M6.44.152q-.52.104-1.012.27l.321.948q.43-.147.884-.237L6.44.153zm4.132.271a8 8 0 0 0-1.011-.27l-.194.98q.453.09.884.237zm1.873.925a8 8 0 0 0-.906-.524l-.443.896q.413.205.793.459zM4.46.824q-.471.233-.905.524l.556.83a7 7 0 0 1 .793-.458zM2.725 1.985q-.394.346-.74.74l.752.66q.303-.345.648-.648zm11.29.74a8 8 0 0 0-.74-.74l-.66.752q.346.303.648.648zm1.161 1.735a8 8 0 0 0-.524-.905l-.83.556q.254.38.458.793l.896-.443zM1.348 3.555q-.292.433-.524.906l.896.443q.205-.413.459-.793zM.423 5.428a8 8 0 0 0-.27 1.011l.98.194q.09-.453.237-.884zM15.848 6.44a8 8 0 0 0-.27-1.012l-.948.321q.147.43.237.884zM.017 7.477a8 8 0 0 0 0 1.046l.998-.064a7 7 0 0 1 0-.918zM16 8a8 8 0 0 0-.017-.523l-.998.064a7 7 0 0 1 0 .918l.998.064A8 8 0 0 0 16 8M.152 9.56q.104.52.27 1.012l.948-.321a7 7 0 0 1-.237-.884l-.98.194zm15.425 1.012q.168-.493.27-1.011l-.98-.194q-.09.453-.237.884zM.824 11.54a8 8 0 0 0 .524.905l.83-.556a7 7 0 0 1-.458-.793zm13.828.905q.292-.434.524-.906l-.896-.443q-.205.413-.459.793zm-12.667.83q.346.394.74.74l.66-.752a7 7 0 0 1-.648-.648zm11.29.74q.394-.346.74-.74l-.752-.66q-.302.346-.648.648zm-1.735 1.161q.471-.233.905-.524l-.556-.83a7 7 0 0 1-.793.458zm-7.985-.524q.434.292.906.524l.443-.896a7 7 0 0 1-.793-.459zm1.873.925q.493.168 1.011.27l.194-.98a7 7 0 0 1-.884-.237zm4.132.271a8 8 0 0 0 1.012-.27l-.321-.948a7 7 0 0 1-.884.237l.194.98zm-2.083.135a8 8 0 0 0 1.046 0l-.064-.998a7 7 0 0 1-.918 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                        </svg>
+                    </button>
+                    <select id="collectionSelect" class="form-control" style="flex:1;">
+                        <option value="">Chargement...</option>
+                    </select>
+                    <button id="saveCollectionBtn" class="btn btn-sm btn-primary">Enregistrer</button>
+                </div>
+
+                <div style="text-align:right; margin-top:10px;">
+                    <button id="cancelCollectionBtn" class="btn btn-sm btn-secondary">Annuler</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Page Réinitialisation de mot de passe - Si demandée et vérifiée -->
+        <!-- PAGE DE RÉINITIALISATION -->
+        <div id="pageResetPassword" style="display: none; color: white; background-color: #130a4d; padding: 20px; padding-top: 250px; max-width: 400px; margin: 20px auto;">
+            <h3>Réinitialisation du mot de passe</h3>
+            <form id="resetPasswordForm">
+            <!-- Mot de passe avec visibilité -->
+            <div style="position: relative;">
+                <input type="password" class="allFormInput" name="password" id="newPassword" placeholder="Nouveau mot de passe" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                <span class="toggle-password" data-target="newPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+            </div>
+
+            <!-- Confirmation du mot de passe avec visibilité -->
+            <div style="position: relative;">
+                <input type="password" class="allFormInput" name="confirm_password" id="confirmPassword" placeholder="Confirmer le mot de passe" required style="width: 100%; padding: 10px; margin: 5px 0; background-color: #333; color: white; border: 1px solid #444;">
+                <span class="toggle-password" data-target="confirmPassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">👁️</span>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #5A5AFF; color: white; border: none; cursor: pointer;">Réinitialiser</button>
+            </form>
+        </div>
+        <!-- FIN PAGE DE RÉINITIALISATION --> 
+        <section>  <!-- DEBUT SECTION CONTENU PRINCIPAL -->
+
+        <!-- Footer avec infos développeur et contact -->
+        <footer class="footer text-black text-center text-lg-start">
+            <!-- Bouton retour page d'accueil -->
+            <div class="d-flex float-end" style="cursor: pointer; margin-top: 5px; margin-right: 10px;" onclick="scrollToTop()">
+                <span class="text-muted">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-up-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0m-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
+                    </svg>
+                </span>
+            </div> 
+            <div class="text-left p-3 shadow">
+                Copyright(&copy;): Aliou Mbengue - TECH-JAMM<br>
+                Contact: 
+                <span class=" d-inline-block">
+                    <img src="assets/images/icons/icon-whatsapp.png" alt="whatsapp" class="icon rounded-circle pb-1" width="18">
+                    <a href="https://api.whatsapp.com/send?phone=221764550358" class="text-success text-decoration-none">+221764550358</a>
+                </span>
+                -
+                <span class=" d-inline-block">
+                    <img src="assets/images/icons/icon-mail.png" alt="mail" class="icon rounded-circle pb-1" width="18">
+                    <a href="mailto:tech.jamm.corp@gmail.com" class=" text-primary text-decoration-none">tech.jamm.corp@gmail.com</a>
+                </span>
+
+                <div class="d-block">
+                Pour nous soutenir 
+                -
+                    <span class=" d-inline-block">
+                        <img src="assets/images/icons/wave.png" alt="Wave Mobile" class="icon rounded-circle pb-1" width="18">
+                        <img src="assets/images/icons/om.png" alt="Orange Money" class="icon rounded-circle pb-1" width="18">
+                        <a href="tel:+221776647080" class="text-primary text-decoration-none">+221-77-664-70-80</a>
+                    </span> 
+                </div>
+            </div>          
+        </footer>
+    </main> <!-- FIN MAIN -->
+        <!-- Référencement du Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker enregistré avec succès:', registration);
+            })
+            .catch((error) => {
+                console.error('Erreur lors de l\'enregistrement du Service Worker:', error);
+            });
+    }
+    </script>
+
+    <!-- Le script pour la manipulation de l'ordre et bouton d'imges -->
+    <script src="assets/js/script.js"></script>
+
+    <script src="./assets/js/jquery.min.js"></script>
+    <script src="./assets/js/bootstrap.min.js"></script>
+    <script src="./assets/js/popper.min.js"></script>
+</body>
+</html>

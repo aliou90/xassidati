@@ -1,0 +1,31 @@
+!NOTE : TRÈS IMPORTANT POUR LE FONCTIONNEMENT APRÈS CLONE DEPUIS GITHUB
+    '---> Renommez le dossier assets/documents/books_sample à assets/documents/books
+
+
+DEPLOIEMENT (Attribution des Propriétés et Droits)
+1. Recherche l'utilisateur de Apache
+A. Si Apache s'execute sous le nom apache (Pas dans ce cas)
+$ ps aux | grep apache
+mbengue   190808  0.0  0.0  11784  2368 pts/1    S+   20:35   0:00 grep --color=auto apache
+
+B. Ou Si Apache s'execute sous le nom httpd (Cas actuel)
+$ ps aux | grep httpd
+root      190494  0.0  0.1 345412 27956 ?        Ss   20:33   0:00 /opt/lampp/bin/httpd -k start -E /opt/lampp/logs/error_log -DSSL -DPHP
+daemon    190500  0.0  0.0 339644 11800 ?        S    20:33   0:00 /opt/lampp/bin/httpd -k start -E /opt/lampp/logs/error_log -DSSL -DPHP
+daemon    190508  0.0  0.1 346260 24488 ?        S    20:33   0:00 /opt/lampp/bin/httpd -k start -E /opt/lampp/logs/error_log -DSSL -DPHP
+
+(daemon est donc l'utilisateur d'Apache)
+
+2. Attribution des droits
+A. Proprités
+sudo chown -R daemon:daemon /opt/lampp/htdocs/xassidati.local
+B. Droits 
+sudo chmod -R 755 /opt/lampp/htdocs/xassidati.local
+
+3. Redémarrer serveur Apache (ou tous)
+$ sudo /opt/lampp/lampp restart
+
+
+------------------------------------------
+infinityFree (password)
+QUKy3gEVXAUzgtT

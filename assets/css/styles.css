@@ -1,0 +1,847 @@
+/* Police arabe */
+@font-face {
+    font-family: 'AlMushafQuran';
+    src: url('../fonts/AlMushafQuran.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Neirizi';
+    src: url('../fonts/Neirizi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'AmiriQuran';
+    src: url('../fonts/AmiriQuran.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lateef';
+    src: url('../fonts/LateefRegular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'AmiriQuran', sans-serif;
+    background-color: #0c0a18;
+    overflow-x: hidden;
+}
+
+/* Réinitialiser les marges et paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Assurer que le body occupe toute la hauteur */
+html, body {
+    height: 100%;
+}
+
+/* Contenu du carousel */
+#content {
+    /* Bordure blanche autour du contenu */
+    border-radius: 20px;
+    /* Bordures arrondies */
+    background-color:#0c0a18;
+    /* Espacement interne du cadre */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    /* Ombre portée pour un effet de profondeur */
+    max-width: 1000px;
+    max-height: 3200px;
+    /* Largeur maximale du cadre */
+    margin: 0 auto;
+    /* Centrer le cadre sur la page */
+    overflow: hidden;
+    /* Empêche le débordement de l'intérieur du cadre */
+}
+
+/* Styles du footer */
+.footer {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    padding-bottom: 70px;
+    text-align: center;
+    border-top: 1px solid #ccc;
+}
+
+/* Centrage du contenu (Taille mobile unique)*/
+.app-container {
+    margin: 0 auto;
+}
+
+/* Pour les petits écrans */
+@media (max-width: 480px) {
+    .app-container {
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+    }
+}
+
+/* Conteneur Header de la page */
+#header-content-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 980;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contient l'image brand*/
+.container-fluid { 
+    height: 80px;
+}
+
+/* Style pour l'image brand */
+.brand-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Assure que l'image remplisse tout l'espace sans déformer */
+    border-radius: 12px; /* Optionnel : ajoute des coins arrondis */
+}
+
+/* Styles pour les éléments de sidebar */
+.menu-header {
+    font-size: 24px;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: #130a4d;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Couleur d'arrière-plan lorsque sidebar est ouvert */
+.menu-header.open {
+    background-color: #0c0a18;
+}
+
+/* Bouton Icon Ouvrir/Fermer Menu droite */
+#toggle-icon {
+    position: fixed;
+    top: 25px;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.589);
+    border-left: none;
+    padding-left: 5px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.5s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1000;
+}
+
+/* Rotation quand ouvert */
+.menu-header.open #toggle-icon #toggle-icon-svg{
+    transform: rotate(180deg);
+}
+
+/* Effet au survol */
+#toggle-icon:hover {
+    background-color: #f9f9f9c0;
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+
+.menu-header .btn {
+    width: 100%;
+    height: 100%;
+}
+
+.menuBrand {
+    background-color:#130a4d;
+}
+
+#sidebar {
+    margin-top: 80px;
+    overflow: hidden; /* Empêche le débordement */
+}
+
+.sidebar-container {
+    font-family: 'AmiriQuran', sans-serif;
+    position: fixed;
+    right: 0;
+    width: clamp(230px, 30vw, 350px); /* Responsive entre 250px et 350px */
+    border-left: 2px solid #fff; /* Bord à gauche vu qu'on est à droite */
+    background-color: #130a4d;
+    z-index: 940;
+    padding-bottom: 420px;
+    text-align: right;
+    height: calc(100vh - 80px);
+    /* overflow-y: auto; */
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    transform: translateX(0); /* visible par défaut */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Quand sidebar est repliée */
+#sidebar.toggled .sidebar-container {
+    transform: translateX(100%); /* La fait glisser complètement hors écran à droite */
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Quand sidebar est dépliée */
+#sidebar .sidebar-container {
+    transform: translateX(0); /* Slide visible */
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#connexionSignal {
+    width: 100%; /* Assurer que le composant prend toute la largeur */
+    font-size: 0.65em; /* Taille de texte réduite */
+    padding: 4px;
+}
+#connexionSignal img {
+    width: 16px; /* Taille des icônes pour compacité */
+    height: 16px;
+}
+#connexionSignalLeft, #connexionSignalRight {
+    display: flex;
+    align-items: center;
+}
+
+.sidebarUpGroup {
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    top: 0; /* Reste en haut lors du scroll */
+    z-index: 961; /* S'assurer qu'il reste au-dessus si chevauchement */
+    background-color: #130a4d; /* Préserver la couleur en cas de superposition */
+}
+
+.sidebarDownHeader {
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    top: 110px; /* Reste en haut lors du scroll */
+    z-index: 961; /* S'assurer qu'il reste au-dessus si chevauchement */
+    background-color: #130a4d; /* Préserver la couleur en cas de superposition */
+}
+
+.sidebarDownGroup {
+    z-index: 960; 
+}
+
+.tab-pane:not(.active) {
+    display: none !important;
+}
+
+#found-books {
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    height: calc(100vh - 180px);
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
+    /* Barre de défilement placée à droite */
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: #6c757d transparent; /* Couleur de la barre et du fond */
+    /* Pour les navigateurs basés sur WebKit (Chrome, Safari) */
+    &::-webkit-scrollbar {
+        width: 8px; /* Largeur de la barre de défilement */
+    }
+    padding-bottom: 150px; /* Pour éviter que le contenu ne soit masqué */
+}
+
+#allBooksGroups {
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    height: calc(100vh - 260px);
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse la hauteur */
+    /* Barre de défilement placée à droite */
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: #6c757d transparent; /* Couleur de la barre et du fond */
+    /* Pour les navigateurs basés sur WebKit (Chrome, Safari) */
+    &::-webkit-scrollbar {
+        width: 8px; /* Largeur de la barre de défilement */
+    }
+    padding-bottom: 150px; 
+}
+
+#downloadedBooksGroup {
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    height: calc(100vh - 260px);
+    overflow-y: auto;
+    /* Barre de défilement placée à droite */
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: #6c757d transparent; /* Couleur de la barre et du fond */
+    /* Pour les navigateurs basés sur WebKit (Chrome, Safari) */
+    &::-webkit-scrollbar {
+        width: 8px; /* Largeur de la barre de défilement */
+    }
+    padding-bottom: 150px;
+}
+
+
+.downloadedBookList-header {
+    /* En-tête de la liste des livres téléchargés avec position sticky */
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    top: 0; /* Reste en haut lors du scroll */
+    z-index: 960; /* S'assurer qu'il reste au-dessus si chevauchement */
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #1f1460; /* Fond foncé mais distinct de la sidebar */
+    color: #ffffff;
+    padding: 10px 15px;
+    margin: 0;
+    border-top: 1px solid #2d2279;
+    border-bottom: 1px solid #2d2279;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.bookList-header {
+    /* En-tête de la liste des livres avec position sticky */
+    position: sticky; /* Position fixe relative à l'élément parent qui scrolle */
+    top: 0; /* Reste en haut lors du scroll */
+    z-index: 960; /* S'assurer qu'il reste au-dessus si chevauchement */
+
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #1f1460; /* Fond foncé mais distinct de la sidebar */
+    color: #ffffff;
+    padding: 10px 15px;
+    margin: 0;
+    border-top: 1px solid #2d2279;
+    border-bottom: 1px solid #2d2279;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.bookList-header:hover {
+    background-color: #2e1c88; /* Accentue au survol */
+}
+
+/* Icône ou flèche si tu ajoutes un span par exemple */
+.bookList-header::after {
+    content: "▸"; /* Flèche vers la droite par défaut */
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+    transform: rotate(90deg); /* Point vers le bas = ouvert */
+}
+
+/* Lorsqu'on replie (ferme), on revient à flèche droite */
+.bookList-header.collapsed::after {
+    transform: rotate(0deg); /* Point vers la droite = fermé */
+}
+
+.bookList {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease-in-out;
+    z-index: 950; /* Pour être au-dessus des autres éléments */
+}
+
+.bookList.open {
+    max-height: 999999px; /* Choisis une valeur max suffisante pour contenir les livres */
+}
+
+/* 
+    ÉLÉMENTS DE CHAQUE GROUPE LISTE DES LIVRES 
+*/
+.bookItem {
+    direction: rtl;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    color: black;
+    white-space: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: thin;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre douce */
+    position: relative;
+    padding: 4px 5px;
+    margin-bottom: 4px;
+    transition: all 0.2s ease-in-out; /* Transition fluide */
+    cursor: pointer;
+}
+
+.bookItem:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
+    transform: translateY(-2px); /* Légère élévation */
+    background-color: #f8f9fa; /* Légère teinte au survol */
+}
+
+/**
+    LES BOUTONS TÉLÉCHARGER/SUPPRIMER
+*/
+.DownDelBtnGroup {
+    text-decoration: none;
+    position: sticky; /* Fixe à sa position lorsque vous faites défiler */
+    right: 0; /* Aligne à la droite du conteneur parent */
+    top: 0; /* Aligne au sommet de l'élément */
+    z-index: 951; /* Pour être au-dessus du contenu */
+    display: flex; /* Affiche les boutons horizontalement */
+    padding-bottom: 12px;
+}
+
+/* Boutons téléchargement et suppression */
+.bookDownloadButton,
+.bookDeleteButton {
+    margin-left: 8px;
+}
+
+/* Poigéer de tri */
+.dragHandle {
+    margin-left: 4px;
+    margin-right: 4px;
+    cursor: grab;
+}
+
+/* Boutons (span) dupliquer un téléchargement */
+.bookDuplicateButton {
+    position: absolute;
+    left: 5px;
+    bottom: 0;
+    
+}
+
+/**
+    LIEN DANS L'ÉLÉMENT DE LISTE
+*/
+.bookLink {
+    display: block !important;
+    overflow-x: auto !important;
+    max-width: 100% !important;
+    scrollbar-width: thin;
+    flex-grow: 1;
+    color: black;
+    padding-bottom: 4px;
+}
+
+.bookNameArabic,
+.bookNameLatin {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block !important; /* Force le retour à la ligne */
+    margin-bottom: 4px;
+}
+
+.bookNameLatin {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+.bookNameArabic {
+    direction: rtl !important;
+    text-align: right !important;
+    padding-bottom: 4px; /*plus les 4px de .bookLink (parent)*/
+}
+
+.btn-link {
+    height: 100%;
+    padding: 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.groupList {
+    direction: rtl;
+    cursor: pointer;
+}
+
+.separator {
+    border-top: 2px solid #fff;
+    margin: 10px 0;
+}
+
+/* Alignement de texte dans champ de saisi*/      
+.text-align-left {
+    text-align: left;
+}
+  
+.text-align-right {
+    text-align: right;
+}
+
+.sidebar-header-left {
+    font-family:'Neirizi', sans-serif;
+    font-size: 24px;
+    color: white;
+    text-align: center;
+    background-color: #130a4d;
+    border-start-start-radius: 80px;
+    margin: 0 0;
+    padding: 10px 5px;
+    padding-top: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 980;
+    width: 120px;
+    height: 80px;
+}
+
+.sidebar-header-right {
+    font-family:'Neirizi', sans-serif;
+    font-size: 24px;
+    color: white;
+    text-align: center;
+    background-color: #130a4d;
+    border-start-end-radius: 80px;
+    margin: 0 0;
+    padding: 10px 5px;
+    padding-top: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 980;
+    width: 120px;
+    height: 80px;
+}
+
+#diplay-book-list-area{
+    /* direction: rtl; */
+    text-align: right;
+}
+
+#downloadedBookList {
+    position: relative;
+    overflow: hidden;
+}
+
+.dragHandle {
+    cursor: grab;
+    touch-action: none; /* Important pour empêcher les conflits tactiles */
+}
+
+.dragHandle:active {
+    cursor: grabbing;
+}
+
+.dragging {
+    opacity: 0.95;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.placeholder {
+    background: rgba(200, 200, 200, 0.2);
+    border: 2px dashed #ccc;
+    margin: 4px 0;
+}
+
+#images-container {
+    direction: ltr;
+    display: block;
+    max-width: 100%; /* Largeur maximale du carrousel */
+    max-height: 100%; /* Hauteur maximale du carrousel */
+    margin: 0 auto; /* Centrer le carrousel */
+    padding: 2px; /* Espacement autour du carrousel */
+    overflow: hidden; /* Empêcher tout débordement */
+    border-radius: 20px;
+    /* Bordures arrondies pour le carousel */
+    overflow: hidden;
+    /* S'assurer que les images ne dépassent pas */
+}
+
+.carousel-item {
+    border-radius: 20px;
+    max-height: 2800px;    /* hauteur fixe souhaitée */
+}
+
+/* Ajustement des images */
+.carousel-item img {
+    width: 100%;
+    /* S'ajuste automatiquement à la largeur */
+    object-fit: contain;
+    /* Recadrage propre */
+    border-radius: 20px;
+}
+
+/* Mode Portrait */
+#images-container.portrait-mode .carousel-item img {
+    height: 100vh;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin: auto;
+    border-radius: 20px;
+}
+
+/* Zone d'affichage des metadatas du livre affiché */
+#metaBookSection {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 10px 16px;
+    margin: 12px;
+    position: relative;
+}
+
+#metaBookLink {
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid #d1d1d1;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+#metaBookLink:hover,
+#metaBookLink:focus {
+    background-color:#ffe68c; /* Couleur de fond au survol */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px); /* effet de surélévation */
+    outline: none;
+}
+
+#metaBookLink p {
+    margin-bottom: 0.3rem;
+}
+
+/* Amélioration du bouton de fermeture */
+.close-button {
+    position: absolute;
+    bottom: 14px;
+    right: 18px;
+    cursor: pointer;
+}
+
+.close-button svg {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.close-button svg:hover {
+    transform: scale(1.1);
+    opacity: 0.85;
+}
+
+/* Commandes de navigation du livre */
+.page-navigation {
+    width: auto; /* Ajuster la largeur automatiquement */
+    /* min-width: 360px; Ajustez selon vos besoins */
+    max-width: 100vw; /* Ne jamais dépasser la largeur de l’écran */
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Centrer horizontalement */
+    background-color: rgba(255, 255, 255, 0.7); /* Transparence */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 950; /* Au-dessus des autres éléments */ 
+    direction: ltr;
+    /* Empêcher la sélection de texte */
+    user-select: none;
+}
+
+/* Bouton demi-cercle */
+.orientation-toggle {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 25px;
+    background: #f8f9fa80;
+    border: 2px solid #6c757d;
+    border-bottom: none;
+    border-radius: 25px 25px 0 0;
+    padding: 0;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* Icône centrée dans le bouton */
+.orientation-toggle .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    transform: rotate(90deg);
+    transform-origin: center center; /* clé pour ne pas décaler */
+    background-color: transparent;
+}
+
+/* Rotation parfaitement centrée */
+.orientation-toggle .icon.rotated {
+    transform: rotate(180deg);
+}
+
+.pageNavBtnGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%; /* si nécessaire */
+    height: 100%; /* ou une hauteur fixe si besoin */
+    border: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.pageNavBtnGroup svg {
+    width: 35px;
+    height: 35px;
+}
+
+@media (max-width: 400px) {
+    .pageNavBtnGroup svg{
+        width: 28px;
+        height: 28px;
+    }
+    .page-navigation{
+        width: 360px; /* Ajustez selon vos besoins */
+    }
+}
+
+@media (max-width: 780px) {
+    .page-navigation{
+        width: 400px; /* Ajustez selon vos besoins */
+    }
+}
+
+/* Champ de recherche de page */
+#pageInput {
+    width: 60px; /* Limite à 5 chiffres maximum */
+    max-width: 60px;
+}
+
+.btn-outline-secondary {
+    padding: 0.25rem 0.75rem; /* Ajuste les dimensions des boutons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal floattant dédié à l'affichage des messages */
+#floating-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    font-size: 16px;
+    opacity: 0;
+    transition: all 0.5s ease;
+    z-index: 999;
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+}
+#floating-message.show {
+    opacity: 1;
+    top: 40px;
+}
+
+.popover {
+    position: fixed; /* Positionne le popover de manière fixe */
+    top: 75%; /* Centre verticalement */
+    left: 50%; /* Centre horizontalement */
+    transform: translate(-50%, -50%); /* Ajuste le centre du popover */
+    border: 1px solid #ccc; /* Couleur de bordure */
+    background-color: white; /* Couleur de fond */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Ombre pour le popover */
+    z-index: 999; /* S'assurer qu'il est au-dessus des autres éléments */
+    border-radius: 5px; /* Pour une apparence plus esthétique */
+    padding: 10px; /* Ajoute du remplissage */
+    display: none; /* Garder ceci pour éviter qu'il soit visible avant le clic */
+}
+
+.visually-hidden {
+    display: none; /* Masquer l'élément par défaut */
+}
+
+#auth-section {
+    margin-top: 20px;
+    color: white;
+    background-color: #130a4d;
+}
+
+#auth-container {
+    border: 1px solid #333;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #222; /* Arrière-plan pour contraster avec le fond */
+    color: white;
+}
+
+#auth-container input[type="text"],
+#auth-container input[type="email"],
+#auth-container input[type="password"],
+#auth-container button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 4px;
+}
+
+#auth-container button {
+    background-color: #5A5AFF;
+    cursor: pointer;
+}
+
+#auth-container a {
+    color: #5A5AFF;
+}
+
+#user-info {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+}
+
+/* Mise en évidence des termes recherchés */
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
+/* Ajout d'une classe de surbrillance temporaire, pour visualiser le scroll */
+.bg-highlight {
+    background-color: rgba(255, 230, 0, 0.4) !important;
+    transition: background-color 0.5s ease;
+}
+
+/* Mise en évidence du livre en cours de lecture dans la liste */
+.active-book-highlight {
+    background-color: #ffe68c !important; /* Jaune doux */
+    border: 2px solid #f5c400; /* Bordure jaune foncée */
+    transform: scale(0.98); /* Effet enfoncé */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+}

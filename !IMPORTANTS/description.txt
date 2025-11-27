@@ -1,0 +1,21 @@
+APPLICATION DE LECTURE DU CORAN ET DES XASSAIDES 
+
+-----------------------------------------------
+BACK_END (PHP - AJAX - WEBSOCKET(RATCHET))
+-----------------------------------------------
+
+-----------------------------------------------
+FRONT_END (HTML, CSS, BOOTSTRAP, JAVAsCRIPT)
+-----------------------------------------------
+
+-----------------------------------------------
+DESCRIPTION
+-----------------------------------------------
+Application pwa (installable) permettant de lire 
+des livres, les télécharger, lire les livres 
+téléchargés hors connexion, faire des marques-pages etc...
+Nécéssite une installation et une ouverture de compte pour
+bénéficier de tous ses fonctionnalités.
+Les livres téléchargés peuvent être triés et réorganiser et 
+peuvent être lus ensemble ou en solo.
+

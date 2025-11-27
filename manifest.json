@@ -1,0 +1,34 @@
+{
+  "name": "Xassidati",
+  "short_name": "Xassidati",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "description": "Xassidati - Bibliothèque du Coran et des Livres de Cheikh Ahmadou Bamba Khadimou Rassoul",
+  "icons": [
+    {
+      "src": "/assets/images/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshots/screenshot1.png",
+      "sizes": "360x640",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/images/screenshots/screenshot2.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
